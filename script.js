@@ -23,11 +23,12 @@ const gameBoard = (() => {
   const setSign = (idx, player) => {
     if (_board[idx].getValue()) return false;
     _board[idx].setValue(player);
+    return true;
   }
 
   const clearField = () => {
     for (let i = 0; i < _cells; i++) {
-      _board[i] = undefined;
+      _board[i] = Cell();
     }
   }
 
@@ -54,28 +55,40 @@ const gameController = (() => {
     _activePlayer = _activePlayer === players[0] ? players[1] : players[0];
   }
 
-  const _printNewRound = () => {
+  const _printNewRound = (board) => {
     gameBoard.printBoard();
-    console.log(`${getActivePlayer().getSign()}'s turn.`);
+    if (!checkForWin(board) && !checkForDraw(board)) {
+      console.log(`${getActivePlayer().getSign()}'s turn.`);
+    }
   }
 
   const playRound = (idx) => {
+    let _board = gameBoard.getBoard();
     if (!gameBoard.setSign(idx, getActivePlayer())) {
       console.log("Could not set the requested sign on the board");
       return;
     }
+
     _switchPlayerTurn();
-    _printNewRound();
+    _printNewRound(_board);
+    if (checkForWin(_board)) {
+      _switchPlayerTurn();
+      return `${getActivePlayer().getSign()} won the game.`;
+    } else if (checkForDraw(_board)) {
+      return 'Draw.';
+    }
   }
   
   const _checkRows = (board) => {
     for (let i = 0; i < 3; i++) {
       let row = []
       for (let j = i * 3; j < i * 3 + 3; j++) {
-        row.push(board[j]);
+        row.push(board[j].getValue());
       }
 
-      return (row.every(field => field == 'X') || row.every(field => field == 'O'));
+      if (row.every(field => field == 'X') || row.every(field => field == 'O')) {
+        return true;
+      }
     }
   return false;
   }
@@ -84,19 +97,21 @@ const gameController = (() => {
     for (let i = 0; i < 3; i++) {
       let column = []
       for (let j = 0; j < 3; j++) {
-        column.push(board[i + 3 * j]);
+        column.push(board[i + 3 * j].getValue());
       }
-      return (column.every(field => field == 'X') || column.every(field => field == 'O'));
+      if (column.every(field => field == 'X') || column.every(field => field == 'O')) {
+        return true;
+      }
     }
   return false;
   }
 
   const _checkDiagonals = (board) => {
-    diagonal1 = [board.getField(0), board.getField(4), board.getField(8)];
-    diagonal2 = [board.getField(6), board.getField(4), board.getField(2)];
+    diagonal1 = [board[0], board[4], board[8]];
+    diagonal2 = [board[2], board[4], board[6]];
     
-    return (diagonal1.every(field => field == 'X') || diagonal1.every(field => field == 'O') || 
-            diagonal2.every(field => field == 'X') || diagonal2.every(field => field == 'O'));
+    return (diagonal1.every(field => field.getValue() == 'X') || diagonal1.every(field => field.getValue() == 'O') || 
+            diagonal2.every(field => field.getValue() == 'X') || diagonal2.every(field => field.getValue() == 'O'));
   }
 
   const checkForWin = (board) => (_checkColumns(board) || _checkDiagonals(board) || _checkRows(board));
@@ -106,7 +121,7 @@ const gameController = (() => {
       return false;
     }
     for (let i = 0; i < 9; i++) {
-      const field = board.getField(i);
+      const field = board[i].getValue();
       if (field == undefined) {
           return false;
       }
