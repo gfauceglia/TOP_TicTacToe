@@ -129,5 +129,11 @@ const gameController = (() => {
   return true;
   }
 
-  return {getActivePlayer, playRound, checkForWin, checkForDraw};
+  const restartGame = () => {
+    gameBoard.clearField();
+    _activePlayer = players[0];
+    _printNewRound(gameBoard.getBoard());
+  }
+
+  return {getActivePlayer, playRound, checkForWin, checkForDraw, restartGame};
 })();
