@@ -1,0 +1,78 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  font-size: 36px;
+  margin: 0px;
+}
+
+.btn {
+  background-color: white;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  margin: auto;
+  
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.player {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0.5em 0 0 0;
+}
+
+.player button {
+  width: 15em;
+  height: 2.5em;
+  margin: 1em;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  grid-template-rows: repeat(3, 80px);
+  padding: 1em 0;
+
+  justify-content: center;
+  width: 100%;
+  background-color: lightgray;
+}
+
+.field{
+  background-color: inherit;
+  border-bottom: 3px solid black;
+  border-right: 3px solid black;
+  border: none;
+  border-radius: 0px;
+  border-bottom: 3px solid #203647;
+  border-right: 3px solid #203647;
+}
+
+.r {
+  border-right: 0px;
+}
+
+.b {
+  border-bottom: 0px;
+}
+
+.restart {
+  width: 100%;
+}
+
+.rst {
+  width: 100%;
+  height: 2em;
+  border: none;
+  font-weight: 600;
+  font-size: 24px;
+}
