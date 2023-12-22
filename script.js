@@ -50,6 +50,7 @@ const gameController = (() => {
   let _activePlayer = players[0];
   
   const getActivePlayer = () => _activePlayer;
+  const getLastPlayer = () => _activePlayer === players[0] ? players[1] : players[0];
   
   const _switchPlayerTurn = () => {
     _activePlayer = _activePlayer === players[0] ? players[1] : players[0];
@@ -65,18 +66,18 @@ const gameController = (() => {
   const playRound = (idx) => {
     let _board = gameBoard.getBoard();
     if (!gameBoard.setSign(idx, getActivePlayer())) {
-      console.log("Could not set the requested sign on the board");
-      return;
+      alert("Could not set the requested sign on the board");
+      return false;
     }
 
-    _switchPlayerTurn();
     _printNewRound(_board);
     if (checkForWin(_board)) {
-      _switchPlayerTurn();
-      return `${getActivePlayer().getSign()} won the game.`;
+      console.log(`${getActivePlayer().getSign()} won the game.`);
     } else if (checkForDraw(_board)) {
-      return 'Draw.';
+      console.log('Draw.');
     }
+    _switchPlayerTurn();
+    return true;
   }
   
   const _checkRows = (board) => {
@@ -129,11 +130,55 @@ const gameController = (() => {
   return true;
   }
 
-  const restartGame = () => {
+  const restartGame = async function () {
     gameBoard.clearField();
     _activePlayer = players[0];
-    _printNewRound(gameBoard.getBoard());
+    displayController.clearBoard();
+    gameBoard.printBoard();
   }
 
-  return {getActivePlayer, playRound, checkForWin, checkForDraw, restartGame};
+  return { getActivePlayer, getLastPlayer, playRound, checkForWin, checkForDraw, restartGame };
+})();
+
+const displayController = (() => {
+  const _board = Array.from(document.querySelectorAll('button.field'));
+  const _restart = document.querySelector('button.rst');
+
+  const _changeTurn = (sign) => {
+    const x = document.getElementById('X');
+    const o = document.getElementById('O');
+
+    if (sign === 'X') {
+      x.classList.add('active');
+      o.classList.remove('active');
+    } else {
+      o.classList.add('active');
+      x.classList.remove('active');
+    }
+  }
+
+  for (let i = 0; i < _board.length; i++) {
+    let field = _board[i];
+    field.addEventListener('click', () => {
+      if (gameController.playRound(i)) {
+        const p = field.querySelector('p');
+        p.textContent = gameController.getLastPlayer().getSign();
+        _changeTurn(gameController.getActivePlayer().getSign());
+      }
+    });
+  }
+
+  _restart.addEventListener('click', () => {
+    gameController.restartGame();
+    _changeTurn('X');
+  })
+
+  const clearBoard = () => {
+    _board.forEach(field => {
+      const p = field.firstChild;
+      p.textContent = '';
+    });
+  }
+
+  return { clearBoard }
 })();

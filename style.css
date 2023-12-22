@@ -36,6 +36,10 @@ body {
   margin: 1em;
 }
 
+.player .active {
+  background-color: lightgray;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 80px);
