@@ -32,17 +32,7 @@ const gameBoard = (() => {
     }
   }
 
-  const printBoard = () => {
-    const boardWithCellValues = _board.map((cell) => cell.getValue() || ' ');
-    console.log(`
-      ${boardWithCellValues[0]} | ${boardWithCellValues[1]} | ${boardWithCellValues[2]}
-      ---------
-      ${boardWithCellValues[3]} | ${boardWithCellValues[4]} | ${boardWithCellValues[5]}
-      ---------
-      ${boardWithCellValues[6]} | ${boardWithCellValues[7]} | ${boardWithCellValues[8]}
-    `);
-  }
-  return { getBoard, setSign, clearField, printBoard };
+  return { getBoard, setSign, clearField };
 })();
 
 const gameController = (() => {
@@ -56,13 +46,6 @@ const gameController = (() => {
     _activePlayer = _activePlayer === players[0] ? players[1] : players[0];
   }
 
-  const _printNewRound = (board) => {
-    gameBoard.printBoard();
-    if (!checkForWin(board) && !checkForDraw(board)) {
-      console.log(`${getActivePlayer().getSign()}'s turn.`);
-    }
-  }
-
   const playRound = (idx) => {
     let _board = gameBoard.getBoard();
     if (!gameBoard.setSign(idx, getActivePlayer())) {
@@ -70,7 +53,6 @@ const gameController = (() => {
       return false;
     }
 
-    _printNewRound(_board);
     if (checkForWin(_board)) {
       console.log(`${getActivePlayer().getSign()} won the game.`);
     } else if (checkForDraw(_board)) {
@@ -130,11 +112,10 @@ const gameController = (() => {
   return true;
   }
 
-  const restartGame = async function () {
+  const restartGame = () => {
     gameBoard.clearField();
     _activePlayer = players[0];
     displayController.clearBoard();
-    gameBoard.printBoard();
   }
 
   return { getActivePlayer, getLastPlayer, playRound, checkForWin, checkForDraw, restartGame };
