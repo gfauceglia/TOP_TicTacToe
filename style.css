@@ -80,3 +80,17 @@ body {
   font-weight: 600;
   font-size: 24px;
 }
+.blur {
+  filter: blur(5px);
+}
+
+#messageBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: white;
+  border: 2px solid black;
+  z-index: 999; 
+}

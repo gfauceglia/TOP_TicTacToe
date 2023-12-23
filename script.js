@@ -54,9 +54,9 @@ const gameController = (() => {
     }
 
     if (checkForWin(_board)) {
-      console.log(`${getActivePlayer().getSign()} won the game.`);
+      displayController.endGame(`${getActivePlayer().getSign()} won the game.`);
     } else if (checkForDraw(_board)) {
-      console.log('Draw.');
+      displayController.endGame('Draw.');
     }
     _switchPlayerTurn();
     return true;
@@ -152,6 +152,10 @@ const displayController = (() => {
   _restart.addEventListener('click', () => {
     gameController.restartGame();
     _changeTurn('X');
+    document.querySelector('.board').classList.remove('blur');
+    if (document.getElementById('messageBox')) {
+      document.getElementById('messageBox').remove()
+    }
   })
 
   const clearBoard = () => {
@@ -161,5 +165,13 @@ const displayController = (() => {
     });
   }
 
-  return { clearBoard }
+  const endGame = (message) => {
+    document.querySelector('.board').classList.add('blur');
+    const messageBox = document.createElement('div');
+    messageBox.id = 'messageBox';
+    messageBox.textContent = message;
+    document.body.appendChild(messageBox);
+  }
+
+  return { clearBoard, endGame }
 })();
